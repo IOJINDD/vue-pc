@@ -1,0 +1,271 @@
+@charset "utf-8";
+
+/* CSS Document */
+
+
+/*初始化*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video,
+button {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	vertical-align: baseline;
+	font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+	/*	line-height:1em;*/
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	background-size: 100%;
+	cursor: default;
+}
+
+canvas {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	vertical-align: baseline;
+	font-family: "Microsoft YaHei";
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+[data-chart="radar"] *,
+[data-chart="pie"] * {
+	cursor: default;
+}
+
+*:before,
+*:after {
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+/* HTML5 display-role reset for older browsers */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+	display: block;
+}
+
+html,
+body {
+	height: 100%
+}
+
+ol,
+ul {
+	list-style: none;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+a {
+	text-decoration: none;
+	border: 0;
+	outline: none;
+	-webkit-tap-highlight-color: transparent;
+}
+
+input {
+	outline: none;
+	border: 0 none;
+	background: none;
+	font-family: "Microsoft YaHei";
+	padding: 0;
+}
+
+.floatL {
+	float: left;
+}
+
+.floatR {
+	float: right;
+}
+
+.clear {
+	clear: both;
+}
+
+.show {
+	display: block;
+}
+
+.hide {
+	display: none;
+}
+
+.hidden {
+	overflow: hidden;
+}
+
+.relative {
+	position: relative;
+}
+
+.absolute {
+	position: absolute;
+}
+
+.txtC {
+	text-align: center;
+}
+
+.txtR {
+	text-align: right;
+}
+
+// 通用查询/表格样式
+.page {
+	margin: 20px;
+	height: 100%;
+	box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.14);
+	background: #fff;
+}
+
+.el-dialog {
+	right: 0;
+	top: 60px;
+	bottom: 0;
+	width: 75%;
+	margin-left: 25%;
+
+	.el-dialog__header {
+		padding: 20px;
+		border-bottom: 1px solid #ccc;
+	}
+
+	.el-dialog__body {
+		// padding: 30px 120px 30px 20px;
+		padding: 0px;
+		height: calc(100% - 200px);
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+}
+
+@keyframes dialog-fade-in {
+	0% {
+		transform: translate3d(100%, 0, 0);
+		opacity: 0;
+	}
+
+	100% {
+		transform: translate3d(0, 0, 0);
+		opacity: 1;
+	}
+}
+
+@keyframes dialog-fade-out {
+	0% {
+		transform: translate3d(0, 0, 0);
+		opacity: 1;
+	}
+
+	100% {
+		transform: translate3d(100%, 0, 0);
+		opacity: 0;
+	}
+}
+
+.el-table .cell {
+	text-align: center;
+}
+
+.el-table th>.cell {
+	text-align: center;
+}
