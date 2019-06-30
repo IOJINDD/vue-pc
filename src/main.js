@@ -8,6 +8,7 @@ import ComSearch from '@/components/com-search/index'
 import ComTable from '@/components/com-table/index'
 import ComForm from '@/components/com-form/index'
 import common from '@/utils/common-for-vue.js';
+import './assets/css/icon.css';
 import * as filters from './filters' // 全局vue filter
 
 Vue.prototype.common = common;
