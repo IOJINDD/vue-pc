@@ -8,7 +8,7 @@
   <div id="TemplateVue"></div>
 </template>
 <script>
-import Minix from '@/mixins/Minix.js'
+import Minix from '@/minix/Minix.js'
 export default {
   name: "TemplateVue",
   components: {},
