@@ -16,7 +16,8 @@ let loadingInstance;
 // request拦截器
 service.interceptors.request.use(
   config => {
-    if (config.url.indexOf("sspcm/zzjVioauditinglist/page") != -1) {
+    // eslint-disable-next-line no-constant-condition
+    if (true) {
       console.log("刷新");
     } else {
       loadingInstance = Loading.service({

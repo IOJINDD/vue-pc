@@ -9,12 +9,10 @@
   background: #fff;
   height: auto;
   overflow: hidden;
-
   transition: height 0.2s;
   -moz-transition: height 0.2s; /* Firefox 4 */
   -webkit-transition: height 0.2s; /* Safari and Chrome */
   -o-transition: height 0.2s; /* Opera */
-
   .el-form-item {
     .el-form-item__label {
       width: 100px;
@@ -46,12 +44,29 @@
 </style>
 
 <template>
-  <section class="CdtSearch" :style="(flex && close) ? styleObj1 : styleObj2">
-    <el-form :inline="true" :model="searchForm" class="searchForm">
+  <section
+    class="CdtSearch"
+    :style="(flex && close) ? styleObj1 : styleObj2"
+  >
+    <el-form
+      :inline="true"
+      :model="searchForm"
+      class="searchForm"
+    >
       <!-- 遍历form数据 -->
-      <el-form-item size="small" :label="item.label" v-for="(item, index) in formList" :key="index">
+      <el-form-item
+        size="small"
+        :label="item.label"
+        v-for="(item, index) in formList"
+        :key="index"
+      >
         <!-- 判断form 的类型 -->
-        <el-select v-model="searchForm[item.key]" v-if="item.formType == 'select'" @change="change">
+        <el-select
+          v-model="searchForm[item.key]"
+          :filterable="item.filterable"
+          v-if="item.formType == 'select'"
+          @change="change"
+        >
           <el-option
             :label="item2.label"
             :value="item2.value"
@@ -64,6 +79,13 @@
           v-model.trim="searchForm[item.key]"
           :placeholder="item.placeholder"
           v-if="item.formType == 'input'"
+        ></el-input>
+
+        <el-input
+          v-model.trim="searchForm[item.key]"
+          type="number"
+          :placeholder="item.placeholder"
+          v-if="item.formType == 'number'"
         ></el-input>
 
         <!-- switch开关 -->
@@ -120,9 +142,23 @@
         ></el-input>
       </el-form-item>
 
-      <el-form-item size="small" class="btn-group">
-        <el-button size="small" type="success" @click="handleReset()" class="resetBtn" v-if="formList.length > 0">重置</el-button>
-        <el-button size="small" type="primary" @click="handleRefresh()" class="refreshBtn">刷新</el-button>
+      <el-form-item
+        size="small"
+        class="btn-group"
+      >
+        <el-button
+          size="small"
+          type="success"
+          @click="handleReset()"
+          class="resetBtn"
+          v-if="formList.length > 0"
+        >重置</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="handleRefresh()"
+          class="refreshBtn"
+        >刷新</el-button>
       </el-form-item>
 
       <el-form-item>
@@ -133,11 +169,20 @@
 
     <!-- 重置搜索条件 -->
 
-    <div class="flexBtn" v-if="flex">
-      <span v-if="close" @click="close=false">
+    <div
+      class="flexBtn"
+      v-if="flex"
+    >
+      <span
+        v-if="close"
+        @click="close=false"
+      >
         <i class="el-icon-caret-bottom"></i>条件展开
       </span>
-      <span v-else @click="close=true">
+      <span
+        v-else
+        @click="close=true"
+      >
         <i class="el-icon-caret-top"></i>条件收起
       </span>
     </div>
@@ -169,12 +214,12 @@ export default {
   watch: {
     searchForm: {
       handler(val) {
-        for(var item in val){
-          if(val[item] === ""){
-            val[item] = null
+        for (var item in val) {
+          if (val[item] === "") {
+            val[item] = null;
           }
         }
-        console.log('val', val);
+        console.log("val", val);
         this.$emit("handleSearch", val);
       },
       deep: true
@@ -225,8 +270,8 @@ export default {
     formList: {
       // 搜索字段
       type: Array,
-      default () {
-        return []
+      default() {
+        return [];
       }
     }
   },

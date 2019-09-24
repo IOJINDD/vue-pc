@@ -67,12 +67,19 @@
       style="width: 100%"
       class="tableData"
       tooltip-effect="dark"
-      @row-click="handleRow"
+      @row-click="handleRow" 
       :height="height"
+      :summary-method="getTotal"
       @selection-change="handleSelectChange"
+      v-if="displayListRefresh"
     >
       <el-table-column type="selection" width="55" v-if="selection"></el-table-column>
-      <el-table-column type="index" label="序号" width="60" fixed :show-overflow-tooltip="false"></el-table-column>
+      <el-table-column  label="序号" width="80" fixed :show-overflow-tooltip="false">
+        <template slot-scope="scope">
+          <span v-if="listQuery.rows">{{ listQuery.rows * (listQuery.page - 1) + scope.$index + 1 }}</span>
+          <span v-if="!listQuery.rows">{{ scope.$index + 1 }}</span>
+        </template>
+      </el-table-column>
 
       <!-- 其他属性栏插槽 -->
       <slot name="otherColumn"></slot>
@@ -86,8 +93,6 @@
         :show-overflow-tooltip="true"
       >
         <template slot-scope="scope">
-          <!-- <span v-if="item.render">{{ item.render(scope.row[item.key]) }}</span>
-          <span v-if="!item.render">{{ scope.row[item.key] || noMessage }}</span> -->
           <span v-if="item.render">{{ item.render(scope.row) }}</span>
           <span v-if="!item.render">{{ scope.row[item.key] || noMessage }}</span>
         </template>
@@ -119,6 +124,7 @@ export default {
   data: function() {
     return {
       displayList: [],
+      displayListRefresh: true,
       listQuery: {
         page: 1,
         rows: 10,
@@ -211,8 +217,12 @@ export default {
     },
     
     //展示列勾选
-    onCheckboxChange(){
-      console.log('onCheckboxChange', this.displayList);
+    onCheckboxChange() {
+      this.displayListRefresh = false;
+      setTimeout(() => {
+        this.displayListRefresh = true;
+      }, 0);
+      console.log("onCheckboxChange", this.displayList);
     },
 
     // 默认选择
@@ -247,6 +257,35 @@ export default {
     handleCurrentChange(val) {
       this.listQuery.page = val;
       this.$emit("fetchData", this.listQuery);
+    },
+
+    // 自定义合计列
+    getTotal(param) {
+      const { columns, data } = param;
+      const sums = [];
+
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = "合计";
+          return;
+        }
+        const values = data.map(item => Number(item[column.property]));
+        if (column.property) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index];
+        } else {
+          sums[index] = "--";
+        }
+      });
+
+      return sums;
     }
   },
   mounted() {
