@@ -8,7 +8,7 @@
   <div id="TemplateVue"></div>
 </template>
 <script>
-import Minix from '@/minix/Minix.js'
+import { listMixin } from '@/mixins/MyMixin.js'
 export default {
   name: "TemplateVue",
   components: {},
@@ -18,7 +18,7 @@ export default {
   directives:{},
   computed: {},
   watch: {},
-  minix: [Minix],
+  mixins: [listMixin],
   methods: {},
 
   // 当keep-alive 激活时使用
