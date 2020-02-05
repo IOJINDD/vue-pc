@@ -4,9 +4,9 @@ import App from './App.vue'
 import router from './router/index'
 import store from './store/index'
 import './plugins/element.js'
-import ComSearch from '@/components/com-search/index'
-import ComTable from '@/components/com-table/index'
-import ComForm from '@/components/com-form/index'
+import CdtSearch from '@/components/cdt-search/index'
+import CdtTable from '@/components/cdt-table/index'
+import CdtForm from '@/components/cdt-form/index'
 import common from '@/utils/common-for-vue.js'
 import '@/font-awesome/css/font-awesome.min.css'
 import './assets/css/icon.css'
@@ -14,9 +14,9 @@ import * as filters from './filters' // 全局vue filter
 
 Vue.prototype.common = common;
 Vue.config.productionTip = false
-Vue.component('ComSearch', ComSearch)
-Vue.component('ComTable', ComTable)
-Vue.component('ComForm', ComForm)
+Vue.component('ComSearch', CdtSearch)
+Vue.component('ComTable', CdtTable)
+Vue.component('ComForm', CdtForm)
 
 // 配置全局过滤器
 Object.keys(filters).forEach(key => {

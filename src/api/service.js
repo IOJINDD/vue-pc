@@ -24,3 +24,14 @@ export function fetchData (params) {
     method: 'get'
   })
 }
+
+/**
+ * 文件下载
+ */
+export function downloadFiles(data) {
+  return request({
+    url: '/supervise_core/monSuperviseEvent/downLoadFile?wjlj=' + data.wjlj + '&wjmc=' + data.wjmc,
+    method: 'get',
+    responseType:'blob'
+  })
+}
