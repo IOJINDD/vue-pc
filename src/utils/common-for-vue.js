@@ -265,18 +265,6 @@ export default {
   },
 
   /**
-   * 解析审核状态
-   */
-  filterShzt(val) {
-    let obj = {
-      0: '未审批',
-      1: '审批通过',
-      2: '审批不通过'
-    }
-    return obj[val] || val
-  },
-
-  /**
    * 格式化时间
    * @param {*} val - 时间戳
    */
