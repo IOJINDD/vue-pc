@@ -385,7 +385,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["glbmList", "glbmDwdm"])
+    ...mapGetters(["glbmList"])
   },
   watch: {
     // 默认值赋值

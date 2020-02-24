@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive>
-      <router-view v-if="$route.meta.keepAlive && isRouterAlive"></router-view>
-    </keep-alive>
-    <router-view v-if="!$route.meta.keepAlive && isRouterAlive"></router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -13,22 +10,13 @@ export default {
   components: {},
   provide() {
     return {
-      reload: this.reload
     };
   },
   data() {
     return {
-      isRouterAlive: true
     };
   },
   methods: {
-    // 刷新当前页
-    reload() {
-      this.isRouterAlive = false;
-      this.$nextTick(() => {
-        this.isRouterAlive = true;
-      });
-    }
   }
 };
 </script>

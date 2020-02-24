@@ -1,6 +1,6 @@
-import { Message, MessageBox, Notification } from "element-ui";
+import { Message, MessageBox } from "element-ui";
 import store from "../store";
-
+var GLOBAL_DELAY_FLAG = true // 全局变量
 export default {
   /**
    *
@@ -8,19 +8,21 @@ export default {
    * @param {Array} toasts - 对于的提示语句
    * @param {function} callback - 执行的方法
    */
-  CheckData(params, toasts, callback) {
+  checkDataEmpty(params, toasts, callback) {
     let flag = true;
-    params.forEach(function(element, index) {
-      if (!element.Trim()) {
+    params.forEach((element, index) => {
+      console.log('element', element);
+      if (!element || (element && element.length === 0)) {
         if (flag) {
           Message({
             message: toasts[index],
-            type: "error"
+            type: "warning"
           });
         }
         flag = false;
+        return
       }
-    }, this);
+    });
     if (flag) {
       callback();
     }
@@ -29,67 +31,36 @@ export default {
   /**
    * 判断返回的状态码是否是200
    * @param {*} res 返回的参数
-   * @param {*} callBack 是200的回调函数
+   * @param {*} successMsg 成功提示语
+   * @param {*} successCallBack 是200的回调函数
+   * @param {*} errorCallBack 失败的回调函数
    */
-  CheckCode(res, callBack) {
-    console.log("res", res);
+  CheckCode(res, successMsg, successCallBack, errorCallBack) {
     if (res && res.code == 200) {
-      Message({
-        message: res.msg || "操作成功",
-        type: "success"
-      });
-      callBack();
+      if (successMsg) {
+        Message({
+          message: successMsg,
+          type: "success",
+        });
+      }
+      successCallBack();
     } else {
       Message({
         message: res.msg,
         type: "error",
         duration: 1500
       });
+      errorCallBack && errorCallBack()
     }
   },
 
   /**
-   * 时间格式方法
-   * @param {*} date - new Date()
-   * @param {*} format - yyyy年MM月dd日
-   */
-  FormatDate(date, format) {
-    var o = {
-      "M+": date.getMonth() + 1, //month
-      "d+": date.getDate(), //day
-      "h+": date.getHours(), //hour
-      "m+": date.getMinutes(), //minute
-      "s+": date.getSeconds(), //second
-      "q+": Math.floor((date.getMonth() + 3) / 3), //quarter
-      S: date.getMilliseconds() //millisecond
-    };
-    if (/(y+)/.test(format))
-      format = format.replace(
-        RegExp.$1,
-        (date.getFullYear() + "").substr(4 - RegExp.$1.length)
-      );
-    for (var k in o)
-      if (new RegExp("(" + k + ")").test(format))
-        format = format.replace(
-          RegExp.$1,
-          RegExp.$1.length == 1
-            ? o[k]
-            : ("00" + o[k]).substr(("" + o[k]).length)
-        );
-    return format;
-  },
-
-  // 重置表单
-  handleReset() {
-    store.commit("SET_searchForm", {});
-  },
-
-  /**
    * 删除提示
-   * @param {*} successCallBack 确认后回调函数
+   * @Function {*} successCallBack 确认后回调函数
+   * @String {*} title 提示语
    */
-  deleteConfirm(successCallBack) {
-    MessageBox.confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+  handleConfirm(successCallBack, title) {
+    MessageBox.confirm(title || "此操作将永久删除该数据, 是否继续?", "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning"
@@ -100,28 +71,7 @@ export default {
       .catch(() => {
         Message({
           type: "info",
-          message: "已取消删除"
-        });
-      });
-  },
-
-  /**
-   * 撤回提示
-   * @param {*} successCallBack 确认后回调函数
-   */
-  backConfirm(successCallBack) {
-    MessageBox.confirm("是否确认撤回申请？", "提示", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning"
-    })
-      .then(() => {
-        successCallBack();
-      })
-      .catch(() => {
-        Message({
-          type: "info",
-          message: "已取消撤回"
+          message: "已取消"
         });
       });
   },
@@ -151,6 +101,137 @@ export default {
   },
 
   /**
+   * 把菜单栏改成联动选择
+   * @param {*} arr - 所有菜单
+   * @param {*} selected - 已选菜单
+   */
+  menuToSelect(arr, selected) {
+    for (let i = 0; i < arr.length; i++) { 
+      if (arr[i].childrenNode && arr[i].childrenNode.length > 0 && arr[i].data.cdlj === null) {
+        arr[i].children = arr[i].childrenNode
+        arr[i].childrenNode = this.menuToSelect(arr[i].childrenNode, selected);
+      }
+      if (arr[i].data) {
+        arr[i].label = arr[i].data.mkmc
+        arr[i].value = arr[i].data
+        if (selected.indexOf(arr[i].data.mkmc) != -1) {
+          arr[i].disabled = true
+        } else {
+          arr[i].disabled = false
+        }
+      }
+    }
+    return arr;
+  },
+
+  /**
+   * option格式化
+   */
+  optionFormater(arr, value, label) {
+    return arr.map(item => {
+      return {
+        value: item[value],
+        label: item[label]
+      }
+    })
+  },
+
+  /**
+   * 根据 dmlb 或者 lbmc 获取数据字典
+   * @param {*} key
+   */
+  getDic(key) {
+    let list = [];
+    if (key) {
+      if (store.state.dicList) {
+        store.state.dicList.forEach((item, index) => {
+          if (item.dmlb == key || item.lbmc == key) {
+            if (key == 'QYBAZLLB' || key == 'RJBAZLLB') {
+              item.xjsj.forEach(item2 => {
+                list.push({
+                  cllx: item2.dmbh,
+                  wjmc: item2.dmmc,
+                  plsx: item2.plsx,
+                  jllx: item2.jllx,
+                  dmlb: item2.dmlb,
+                });
+              })
+            } else if (key == 'FZJG') {
+              item.xjsj.forEach(item2 => {
+                list.push({
+                  value: item2.dmmc,
+                  label: item2.dmmc,
+                  plsx: item2.plsx,
+                  jllx: item2.jllx,
+                  dmlb: item2.dmlb
+                });
+              })
+            } else if (key == 'mon_supervise_yjxtlb') {
+              item.xjsj.forEach(item2 => {
+                list.push({
+                  value: item2.dmbh,
+                  label: item2.dmmc,
+                  plsx: item2.plsx,
+                  jllx: item2.jllx,
+                  dmlb: item2.dmlb,
+                  icon: item2.bz
+                });
+              })
+            } else {
+              item.xjsj.forEach(item2 => {
+                list.push({
+                  value: item2.dmbh,
+                  label: item2.dmmc,
+                  plsx: item2.plsx,
+                  jllx: item2.jllx,
+                  dmlb: item2.dmlb
+                });
+              });
+            }
+          }
+        });
+      } else {
+        this.getDic(key);
+      }
+    }
+
+    if (key == 'mon_supervise_yjxtlb') {
+      let arr = []
+      list.sort(this.compare("plsx")).forEach((item, index) => {
+        if (store.state.userInfo.userExpForm.yhlx.indexOf(item.value) != -1) {
+          arr.push(item)
+        }
+      })
+      return arr
+    } else {
+      return list.sort(this.compare("plsx"));
+    }
+  },
+
+  FormatDic(zdlb, val) {
+    let arr = this.getDic(zdlb)
+    let label = "";
+    arr.forEach(item => {
+      if (item.value == val) {
+        label = item.label;
+      }
+    });
+    return label || '暂无';
+  },
+ 
+  /**
+   * 根据参数名 获取store里面的state对应的参数名的值
+   * @param {*} state 
+   */
+  getStoreState (state) {
+    if (store.state[state]) {
+      return store.state[state]
+    } else {
+      this.getStoreState(state)
+    }
+  },
+
+  /**
    * 根据数组中对象的某一个属性值进行排序
    * 用法 arr.sort(compare('age'))
    * @param {*} key
@@ -164,42 +245,68 @@ export default {
   },
 
   /**
-   * 判断是否为空
-   * @param {Array} params - 要检查的数组
-   * @param {Array} message - 对于的提示语句
-   * @param {function} callback - 执行的方法
+   * 数字牌补齐位数
    */
-  CheckDataEmpty(params, message, callback) {
-    let flag = true;
-    params.forEach((ele, index) => {
-      if (!String(ele).trim() || !ele) {
-        if (flag) {
-          Notification({
-            title: message[index],
-            // message: message[index],
-            type: "warning",
-            showClose: false
-          });
-        }
-        flag = false;
+  FillCount(str,length) {
+    if(str.length < length){
+      let need = length-str.length
+      for(let i=0; i<need; i++){
+        str.unshift('0')
       }
-    });
-    if (flag) {
-      callback();
-    }
+    } 
+    return str
   },
 
   /**
-   * 判断图片是否存在
+   * 根据glbm代码转中文
    */
-  CheckImgExists(imgurl) {
-    var ImgObj = new Image(); //判断图片是否存在
-    ImgObj.src = imgurl;
-    //没有图片，则返回-1
-    if (ImgObj.fileSize > 0 || (ImgObj.width > 0 && ImgObj.height > 0)) {
-      return true;
-    } else {
-      return false;
+  FormatGlbm(dwdm) {
+    return store.state.glbmDwdm[dwdm] || dwdm
+  },
+
+  /**
+   * 解析审核状态
+   */
+  filterShzt(val) {
+    let obj = {
+      0: '未审批',
+      1: '审批通过',
+      2: '审批不通过'
+    }
+    return obj[val] || val
+  },
+
+  /**
+   * 格式化时间
+   * @param {*} val - 时间戳
+   */
+  FormatDate(val) {
+    return new Date(val).format("yyyy-MM-dd hh:mm:ss");
+  },
+
+  /**
+   * 深度克隆
+   * @param {*} obj 
+   */
+  DeepClone (obj) {
+    let _tmp, result
+    _tmp = JSON.stringify(obj)
+    result = JSON.parse(_tmp)
+    return result
+  },
+
+  /**
+   * 延迟调用
+   * @param {*} callback - 需要调用的方法
+   * @param {*} time - 延迟的实际，默认300毫秒
+   */
+  DelayCall (callback, time) {
+    if (GLOBAL_DELAY_FLAG) {
+      GLOBAL_DELAY_FLAG = false
+      callback()
+      setTimeout(() => {
+        GLOBAL_DELAY_FLAG = true
+      }, time || 500)
     }
   }
 };

@@ -6,16 +6,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    searchForm: {}, // 默认搜索内容
+    glbmList: []
   },
   plugins: [createPersistedState()],
   getters: {
-    searchForm: state => state.searchForm 
   },
   mutations: {
-    SET_searchForm: (state, searchForm) => {
-      state.searchForm = searchForm
-    }
   },
   actions: {
 

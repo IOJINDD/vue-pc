@@ -1,15 +1,17 @@
 <!-- 页面模板 -->
 <style lang="scss">
-#TemplateVue {
+#Demo {
 }
 </style>
 
 <template>
-  <div id="TemplateVue"></div>
+  <div id="Demo">
+    一个新的页面
+  </div>
 </template>
 <script>
 export default {
-  name: "TemplateVue",
+  name: "Demo",
   components: {},
   data() {
     return {};
