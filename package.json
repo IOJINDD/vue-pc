@@ -9,7 +9,7 @@
   "dependencies": {
     "core-js": "^2.6.5",
     "element-ui": "^2.11.0",
-    "mavon-editor": "^2.6.17",
+    "mavon-editor": "^2.8.2",
     "js-cookie": "^2.2.0",
     "vue": "^2.6.10",
     "vue-cropperjs": "^3.0.0",
